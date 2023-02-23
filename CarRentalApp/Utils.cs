@@ -13,6 +13,7 @@ namespace CarRentalApp
 
         public static bool FormIsOpen(string name)
         {
+            //Testing for GitHub Changes
 
             var OpenForm = Application.OpenForms.Cast<Form>();
             var isOpen = OpenForm.Any(q => q.Name == name);
