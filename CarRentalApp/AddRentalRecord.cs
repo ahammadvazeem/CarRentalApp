@@ -72,22 +72,27 @@ namespace CarRentalApp
         }
 
         public DataTable GetData(int rid) 
-        { 
-            DataTable dt = new DataTable();
-            DBConnect.createConnection();
-            SqlConnection con = new SqlConnection();
-            con = DBConnect.SqlConnection;
-            SqlCommand cmd= con.CreateCommand();
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.CommandText = "EditData";
-            cmd.Parameters.AddWithValue("@id", rid);
-            SqlDataAdapter da = new SqlDataAdapter(cmd);
-            da.Fill(dt);
-            con.Open();
-            cmd.ExecuteNonQuery();
-            con.Close();
-        
+        {
+            DataTable dt=new DataTable();
+            Operations op = new Operations();
+            dt=op.getRentData(rid);
             return dt;
+
+
+        //    DataTable dt = new DataTable();
+        //    DBConnect.createConnection();
+        //    SqlConnection con = new SqlConnection();
+        //    con = DBConnect.SqlConnection;
+        //    SqlCommand cmd= con.CreateCommand();
+        //    cmd.CommandType = CommandType.StoredProcedure;
+        //    cmd.CommandText = "EditData";
+        //    cmd.Parameters.AddWithValue("@id", rid);
+        //    SqlDataAdapter da = new SqlDataAdapter(cmd);
+        //    da.Fill(dt);
+        //    con.Open();
+        //    cmd.ExecuteNonQuery();
+        //    con.Close();
+        //    return dt;
         }
 
 
@@ -112,11 +117,11 @@ namespace CarRentalApp
                 {
 
 
-                    DBConnect.createConnection();
-                    SqlConnection con = new SqlConnection();
-                    con = DBConnect.SqlConnection;
-                    SqlCommand cmd = con.CreateCommand();
-                    cmd.CommandType = CommandType.StoredProcedure;
+                    //DBConnect.createConnection();
+                    //SqlConnection con = new SqlConnection();
+                    //con = DBConnect.SqlConnection;
+                    //SqlCommand cmd = con.CreateCommand();
+                    //cmd.CommandType = CommandType.StoredProcedure;
 
                     if (isEditMode1)
                     {
@@ -247,23 +252,28 @@ namespace CarRentalApp
         public DataTable comboLoad()
         {
 
-            //int Id = comboBox1.SelectedIndex;
-
-            DataTable dt = new DataTable();
-
-            DBConnect.createConnection();
-            SqlConnection con = new SqlConnection();
-            con = DBConnect.SqlConnection;
-            SqlCommand cmd = con.CreateCommand();
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.CommandText = "Combox";
-            //cmd.Parameters.AddWithValue("@id", Id);
-            SqlDataAdapter da = new SqlDataAdapter(cmd);
-            da.Fill(dt);
-            con.Open();
-            cmd.ExecuteNonQuery();
-            con.Close();
+            DataTable dt=new DataTable();
+            Operations op=new Operations();
+            dt=op.comboLoding();
             return dt;
+
+
+
+
+
+            //DataTable dt = new DataTable();
+            //DBConnect.createConnection();
+            //SqlConnection con = new SqlConnection();
+            //con = DBConnect.SqlConnection;
+            //SqlCommand cmd = con.CreateCommand();
+            //cmd.CommandType = CommandType.StoredProcedure;
+            //cmd.CommandText = "Combox";
+            //SqlDataAdapter da = new SqlDataAdapter(cmd);
+            //da.Fill(dt);
+            //con.Open();
+            //cmd.ExecuteNonQuery();
+            //con.Close();
+            //return dt;
 
 
         }

@@ -76,5 +76,20 @@ namespace BAL
             return ds;
             
         }
+
+        public DataTable editVehicleRead(int vid)
+        {
+            dbConnect db = new dbConnect();
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandText = "editButton";
+            cmd.Parameters.AddWithValue("@id", vid);
+            SqlDataAdapter da =new SqlDataAdapter(cmd);
+            db.ExcecuteVehicleQuery(cmd);
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+            return dt;
+
+        }
     }
 }

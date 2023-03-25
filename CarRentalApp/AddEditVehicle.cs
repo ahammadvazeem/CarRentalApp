@@ -61,21 +61,32 @@ namespace CarRentalApp
 
         public DataTable editRead(int vid)
         {
-            DataTable table = new DataTable();
-            DBConnect.createConnection();
-            SqlConnection con = new SqlConnection();
-            con = DBConnect.SqlConnection;
-            SqlCommand cmd = con.CreateCommand();
-            cmd.CommandType = CommandType.StoredProcedure;
 
-            cmd.CommandText = "editButton";
-            cmd.Parameters.AddWithValue("@id", vid);
-            SqlDataAdapter sqlSda = new SqlDataAdapter(cmd);
-            sqlSda.Fill(table);
-            con.Open();
-            cmd.ExecuteNonQuery();
-            con.Close();
-            return table;
+            DataTable dt=new DataTable();
+
+            vehicleOp opr = new vehicleOp();
+           dt= opr.editVehicleRead(vid);
+
+            return dt;
+            
+            
+            
+            
+            //DataTable table = new DataTable();
+            //DBConnect.createConnection();
+            //SqlConnection con = new SqlConnection();
+            //con = DBConnect.SqlConnection;
+            //SqlCommand cmd = con.CreateCommand();
+            //cmd.CommandType = CommandType.StoredProcedure;
+
+            //cmd.CommandText = "editButton";
+            //cmd.Parameters.AddWithValue("@id", vid);
+            //SqlDataAdapter sqlSda = new SqlDataAdapter(cmd);
+            //sqlSda.Fill(table);
+            //con.Open();
+            //cmd.ExecuteNonQuery();
+            //con.Close();
+            //return table;
           
 
         }

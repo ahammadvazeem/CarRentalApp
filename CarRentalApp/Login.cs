@@ -11,6 +11,8 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using BAL;
+using BLL;
 using CarRentalApp;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
@@ -52,27 +54,40 @@ namespace CarRentalApp
 
                 bool IsActive = true;
 
-                    DataTable dt = new DataTable();
-                    DBConnect.createConnection();
-                    SqlConnection con = new SqlConnection();
-                    con = DBConnect.SqlConnection;
-                    SqlCommand cmd = con.CreateCommand();
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.CommandText = "Login_Data";
-                    cmd.Parameters.AddWithValue("@username", username);
-                    cmd.Parameters.AddWithValue("@password", hashed_Password);
-                    cmd.Parameters.AddWithValue("@isactive", IsActive);
-                    SqlDataAdapter da = new SqlDataAdapter(cmd);
-                    DataSet ds = new DataSet();
-                    da.Fill(ds);
-                    con.Open();
-                    cmd.ExecuteNonQuery();
-                    con.Close();
+
+                loginInfo info=new loginInfo();
+                info.u_name = username;
+                info.u_password = hashed_Password;
+                info.is_active=IsActive;
+
+                LoginOp opr= new LoginOp();
+                DataSet ds = new DataSet();
+                ds = opr.LoginPage(info);
+
+
+
+                    //DataTable dt = new DataTable();
+                    //DBConnect.createConnection();
+                    //SqlConnection con = new SqlConnection();
+                    //con = DBConnect.SqlConnection;
+                    //SqlCommand cmd = con.CreateCommand();
+                    //cmd.CommandType = CommandType.StoredProcedure;
+                    //cmd.CommandText = "Login_Data";
+                    //cmd.Parameters.AddWithValue("@username", username);
+                    //cmd.Parameters.AddWithValue("@password", hashed_Password);
+                    //cmd.Parameters.AddWithValue("@isactive", IsActive);
+                    //SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    //DataSet ds = new DataSet();
+                    //da.Fill(ds);
+                    //con.Open();
+                    //cmd.ExecuteNonQuery();
+                    //con.Close();
+
+
 
 
                 var count = ds.Tables[0].Rows.Count;
 
-                //var rolnm = ds.Tables[1].Rows[0]["shortName"];
 
                 if (count==1)
                     {

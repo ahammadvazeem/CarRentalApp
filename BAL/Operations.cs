@@ -35,6 +35,20 @@ namespace BAL
         
         }
 
+        public DataTable comboLoding()
+        {
+            DataTable dt=new DataTable();
+            dbConnect db = new dbConnect();
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandType= CommandType.StoredProcedure;
+            cmd.CommandText = "Combox";
+            db.ExcecuteUserQuery(cmd);
+            SqlDataAdapter da=new SqlDataAdapter(cmd);
+            da.Fill(dt);
+            return dt;
+
+        }
+
         public void deleteRentData(AddRentalInfo info,int Id)
         {
             SqlCommand cmd=new SqlCommand();
@@ -43,6 +57,20 @@ namespace BAL
             cmd.Parameters.AddWithValue("id", Id);
             db.ExcecuteNonQuery(cmd);
 
+        }
+
+        public DataTable getRentData(int rid)
+        {
+            dbConnect db=new dbConnect();
+            DataTable dt = new DataTable();
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandType= CommandType.StoredProcedure;
+            cmd.CommandText = "EditData";
+            cmd.Parameters.AddWithValue("@id", rid);
+            db.ExcecuteNonQuery(cmd);
+            SqlDataAdapter da = new SqlDataAdapter(cmd);
+            da.Fill(dt);
+            return dt;
         }
 
         public DataTable LoadRentalDetails()

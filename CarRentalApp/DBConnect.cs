@@ -11,22 +11,22 @@ namespace CarRentalApp
 {
     class DBConnect
     {
-        public static SqlConnection myCon=null;
-        public static void createConnection()
-        {
-            string connectionString = "Data Source =VAZEEM-PC; Initial Catalog =rentCarDb; User ID =vazeem; Password =Vazeem#123";
-            myCon = new SqlConnection(connectionString);
-            //myCon.Open();
+        //public static SqlConnection myCon=null;
+        //public static void createConnection()
+        //{
+        //    string connectionString = "Data Source =VAZEEM-PC; Initial Catalog =rentCarDb; User ID =vazeem; Password =Vazeem#123";
+        //    myCon = new SqlConnection(connectionString);
+        //    //myCon.Open();
 
-        }
+        //}
 
-        public static SqlConnection SqlConnection
-        {
-            get 
-            { 
-                return myCon;
-            }
-        }
+        //public static SqlConnection SqlConnection
+        //{
+        //    get 
+        //    { 
+        //        return myCon;
+        //    }
+        //}
 
     }
 }

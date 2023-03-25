@@ -29,7 +29,6 @@ namespace DAL
         {
             cmd.Connection=getConnection();
             cmd.ExecuteNonQuery();
-            
             con.Close();
            
 
@@ -49,5 +48,12 @@ namespace DAL
             cmd.ExecuteNonQuery();
             con.Close();
         }
+
+        //public void ExcecuteLoginQuery(SqlCommand cmd)
+        //{
+        //    cmd.Connection = getConnection();
+        //    cmd.ExecuteNonQuery();
+        //    con.Close();
+        //}
     }
 }

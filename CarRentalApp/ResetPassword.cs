@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using BLL;
+using BAL;
 using CarRentalApp;
 
 namespace CarRentalApp
@@ -52,30 +54,31 @@ namespace CarRentalApp
                     password = Utils.HashPassword(password);
 
 
+                    PassResetInfo info= new PassResetInfo();
 
-                    DBConnect.createConnection();
-                    SqlConnection con = new SqlConnection();
-                    con = DBConnect.SqlConnection;
-                    SqlCommand cmd = con.CreateCommand();
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.CommandText = "ResetPassword";
-                    cmd.Parameters.AddWithValue("@id", Id);
-                    cmd.Parameters.AddWithValue("@password", password);
-                    //cmd.Parameters.AddWithValue("@isactive", IsActive);
-                    con.Open();
-                    cmd.ExecuteNonQuery();
-                    con.Close();
+                    info.ResetId = Id;
+                    info.rePassword= password;
+                    
+                    PassResetOp opr=new  PassResetOp();
+                    opr.reset_password(info);
 
 
-                    //if (password != confirmpswd)
-                    //{
-                    //    MessageBox.Show("Entered Password is mismatched,please try Again...");
-
-                    //}
 
 
-                    //    password = Utils.HashPassword(password);
-                    //_db.SaveChanges();
+
+                    //DBConnect.createConnection();
+                    //SqlConnection con = new SqlConnection();
+                    //con = DBConnect.SqlConnection;
+                    //SqlCommand cmd = con.CreateCommand();
+                    //cmd.CommandType = CommandType.StoredProcedure;
+                    //cmd.CommandText = "ResetPassword";
+                    //cmd.Parameters.AddWithValue("@id", Id);
+                    //cmd.Parameters.AddWithValue("@password", password);
+                    //con.Open();
+                    //cmd.ExecuteNonQuery();
+                    //con.Close();
+
+
 
                     MessageBox.Show("possword is successfully Reseted");
                     Close();

@@ -43,6 +43,8 @@
   <ItemGroup>
     <Compile Include="AddRentalInfo.cs" />
     <Compile Include="AddUserInfo.cs" />
+    <Compile Include="loginInfo.cs" />
+    <Compile Include="PassResetInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RoleInfo.cs" />
     <Compile Include="vehicleInfo.cs" />
