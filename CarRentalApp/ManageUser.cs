@@ -2,21 +2,26 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
+using BAL;
+using BLL;
+using CarRentalApp;
 
 namespace CarRentalApp
 {
     public partial class ManageUser : Form
     {
-        private readonly rentCarDbEntities1 _db;
+        //private readonly rentCarDbEntities1 _db;
         public ManageUser()
         {
             InitializeComponent();
-            _db= new rentCarDbEntities1();
+            //_db= new rentCarDbEntities1();
         }
 
         private void addBtnUser_Click(object sender, EventArgs e)
@@ -26,26 +31,49 @@ namespace CarRentalApp
                 var adduser = new AddUser(this);
                 adduser.MdiParent = this.MdiParent;
                 adduser.Show();
+                adduser.mguform = this;
             }
         }
 
         private void PassResetBtn_Click(object sender, EventArgs e)
         {
-            try 
-            { 
+            try
+            {
                 //get id of selected row
-                var Id= (int)gvManagUser.SelectedRows[0].Cells["id"].Value;
+                var Id = (int)gvManagUser.SelectedRows[0].Cells["id"].Value;
 
                 //query database for record (check database table id and stored id)
-                var user = _db.Users.FirstOrDefault(q=>q.id==Id);
+              
+                var pass = "";
+                pass = Utils.DefaultHashPassword();
 
-                var hash_password = Utils.DefaultHashPassword(); 
-                user.password= hash_password;
-                _db.SaveChanges();
-                MessageBox.Show($"{user.username}'s Password Successfully Reseted");
+                AddUserInfo info = new AddUserInfo();
+                info.passWord = pass;
+                UserOp up=new UserOp();
+                up.ResetPassword(info,Id);
+
+
+
+
+                //DBConnect.createConnection();
+                //SqlConnection con = new SqlConnection();
+                //con = DBConnect.SqlConnection;
+                //SqlCommand cmd = con.CreateCommand();
+                //cmd.CommandType = CommandType.StoredProcedure;
+                //cmd.CommandText = "PassReset";
+                //cmd.Parameters.AddWithValue("id", Id);
+                //cmd.Parameters.AddWithValue("@password", pass);
+                //con.Open();
+                //cmd.ExecuteNonQuery();
+                //con.Close();
+
+
+
+               
+                MessageBox.Show(" Password Successfully Reseted");
                 populateGrid();
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 MessageBox.Show($"Error:{(ex.Message)}");
             }
@@ -61,23 +89,38 @@ namespace CarRentalApp
                 //get id of selected row
                 var Id = (int)gvManagUser.SelectedRows[0].Cells["id"].Value;
 
-                //query database for record (check database table id and stored id)
-                var user = _db.Users.FirstOrDefault(q => q.id == Id);
 
-                //  if(user.isActive==true)
-                //  {
-                //    true;
-                //  } 
-                //  else
-                //  {
-                //  false;
-                //  }  
+               var isActive =(bool)gvManagUser.SelectedRows[0].Cells["isActive"].Value;
 
-                user.isActive = user.isActive ==true ? false :true ;
-                
-                _db.SaveChanges();
-                MessageBox.Show($"{user.username}'s Activate Status Changed");
-                populateGrid();
+                ////    //query database for record (check database table id and stored id)
+                isActive = isActive == true ? false : true;
+
+                AddUserInfo info=new AddUserInfo();
+                info.is_Active= isActive;
+                UserOp upr=new UserOp();
+                upr.deActivate(info,Id);
+
+
+
+
+
+                //DBConnect.createConnection();
+                //SqlConnection con = new SqlConnection();
+                //con = DBConnect.SqlConnection;
+                //SqlCommand cmd = con.CreateCommand();
+                //cmd.CommandType = CommandType.StoredProcedure;
+                //cmd.CommandText = "deActivate";
+                //cmd.Parameters.AddWithValue("id", Id);
+                //cmd.Parameters.AddWithValue("@isactive", isActive);
+                //con.Open();
+                //cmd.ExecuteNonQuery();
+                //con.Close();
+
+              
+
+               
+                  MessageBox.Show("Activate Status Changed");
+                    populateGrid();
             }
             catch (Exception ex)
             {
@@ -86,41 +129,78 @@ namespace CarRentalApp
 
 
 
-        }
+}
 
-        public void populateGrid()
+        public DataTable gridLoad()
         {
-            try
-            {
-                var users = _db.Users.Select(q => new
-                {   q.id,
-                    q.username,
-                    q.password,
-                    q.UserRoles.FirstOrDefault().Role.name,
-                    q.isActive
-                })
-                    .ToList();
-                gvManagUser.DataSource = users;
-                gvManagUser.Columns["username"].HeaderText = "User Name";
-                gvManagUser.Columns["name"].HeaderText = "Role Name";
-                gvManagUser.Columns["isActive"].HeaderText = "Active";
 
-                gvManagUser.Columns["id"].Visible = false;
-            }
-            catch(Exception ex) 
-            {
-                MessageBox.Show(ex.Message); 
-            }
+
+            DataTable dt= new DataTable();
+            UserOp  upr= new UserOp();
+            dt=upr.pageload();
+            return dt;
+
+
+
+            //DataTable dtData = new DataTable();
+            //DBConnect.createConnection();
+            //SqlConnection con = new SqlConnection();
+            //con = DBConnect.SqlConnection;
+            //SqlCommand cmd = con.CreateCommand();
+            //cmd.CommandType = CommandType.StoredProcedure;
+            //cmd.CommandText = "ManageUserGrid";
+            //SqlDataAdapter sqlSda = new SqlDataAdapter(cmd);
+            //DataSet ds = new DataSet();
+            //sqlSda.Fill(dtData);
+            //con.Open();
+            //cmd.ExecuteNonQuery();
+            //con.Close();
+            //return dtData;
+            
         }
 
         private void ManageUser_Load(object sender, EventArgs e)
         {
-            populateGrid();
+            gvManagUser.DataSource = gridLoad();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        //private void button1_Click(object sender, EventArgs e)
+        //{
+        //    populateGrid();
+        //}
+
+        public DataSet populateGrid()
         {
-            populateGrid();
+            DataSet ds = new DataSet();
+            UserOp up = new UserOp();
+            ds=up.refreshGrid();
+            gvManagUser.DataSource = ds;
+            gvManagUser.DataMember = "Users";
+            return ds;
+
+
+
+
+
+            //DBConnect.createConnection();
+            //SqlConnection con = new SqlConnection();
+            //con = DBConnect.SqlConnection;
+            //SqlCommand cmd = con.CreateCommand();
+            //cmd.CommandType = CommandType.StoredProcedure;
+            //cmd.CommandText = "RefreshManageUser";
+
+            //SqlDataAdapter da = new SqlDataAdapter(cmd);
+            //DataSet ds = new DataSet();
+            //da.Fill(ds, "Users");
+            //gvManagUser.DataSource = ds;
+            //gvManagUser.DataMember = "Users";
+            
+            //con.Open();
+            //cmd.ExecuteNonQuery();
+            //con.Close();
+
         }
+
+        
     }
 }

@@ -33,7 +33,6 @@
             this.addBtnUser = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.gvManagUser = new System.Windows.Forms.DataGridView();
-            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.gvManagUser)).BeginInit();
             this.SuspendLayout();
             // 
@@ -53,7 +52,7 @@
             // 
             this.PassResetBtn.BackColor = System.Drawing.Color.DodgerBlue;
             this.PassResetBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.PassResetBtn.Location = new System.Drawing.Point(280, 497);
+            this.PassResetBtn.Location = new System.Drawing.Point(287, 497);
             this.PassResetBtn.Name = "PassResetBtn";
             this.PassResetBtn.Size = new System.Drawing.Size(293, 63);
             this.PassResetBtn.TabIndex = 8;
@@ -96,24 +95,12 @@
             this.gvManagUser.Size = new System.Drawing.Size(835, 331);
             this.gvManagUser.TabIndex = 5;
             // 
-            // button1
-            // 
-            this.button1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.button1.Location = new System.Drawing.Point(752, 65);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(80, 33);
-            this.button1.TabIndex = 10;
-            this.button1.Text = "Refresh";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
             // ManageUser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.ClientSize = new System.Drawing.Size(863, 572);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.deActivateBtn);
             this.Controls.Add(this.PassResetBtn);
             this.Controls.Add(this.addBtnUser);
@@ -135,6 +122,5 @@
         private System.Windows.Forms.Button addBtnUser;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.DataGridView gvManagUser;
-        private System.Windows.Forms.Button button1;
     }
 }

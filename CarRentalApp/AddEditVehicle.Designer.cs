@@ -62,7 +62,7 @@
             this.tableLayoutPanel1.Controls.Add(this.tbModel, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.tbCarname, 1, 0);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(33, 116);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(33, 102);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 5;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
@@ -195,7 +195,7 @@
             this.label7.Font = new System.Drawing.Font("Matura MT Script Capitals", 25.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.Location = new System.Drawing.Point(352, 32);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(0, 59);
+            this.label7.Size = new System.Drawing.Size(0, 57);
             this.label7.TabIndex = 4;
             // 
             // label8
@@ -221,6 +221,7 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "AddEditVehicle";
             this.Text = "AddEditVehicle";
+           // this.Load += new System.EventHandler(this.AddEditVehicle_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);

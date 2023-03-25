@@ -2,30 +2,68 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.Entity.Infrastructure;
+using System.Data.SqlClient;
+using System.Data.SqlTypes;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
+using BAL;
+using BLL;
+using CarRentalApp;
+
 
 namespace CarRentalApp
 {
     public partial class Manage_Vehicle_List : Form
     {
-        private readonly rentCarDbEntities1 _db;
         public Manage_Vehicle_List()
         {
             InitializeComponent();
-            _db= new rentCarDbEntities1();
+
+        }
+        public DataTable FetchDetail()
+        {
+            DataTable dtData = new DataTable();
+
+            //vehicleInfo info= new vehicleInfo();
+            vehicleOp opr= new vehicleOp();
+
+            dtData=opr.vehicleView();
+
+
+
+           // DBConnect.createConnection();
+           // SqlConnection con = new SqlConnection();
+           // con = DBConnect.SqlConnection;
+           // SqlCommand cmd = con.CreateCommand();
+           // cmd.CommandType = CommandType.StoredProcedure;
+           // cmd.CommandText = "ViewDataGrid";
+           //// cmd.Parameters.AddWithValue("@actiontype", "ViewData");
+           // SqlDataAdapter sqlSda = new SqlDataAdapter(cmd);
+           // DataSet ds = new DataSet();
+           // sqlSda.Fill(dtData);
+           // //dtData.Rows.Count  
+           // con.Open();
+           // cmd.ExecuteNonQuery();
+           // con.Close();
+            return dtData;
+
+            
         }
 
         private void Manage_Vehicle_List_Load(object sender, EventArgs e)
         {
-            //var cars=_db.TypeOfCars.ToList();
-            var cars = _db.TypeOfCars.Select(q=>new { ID=q.id,NAME=q.name,MODEL=q.model,VIN=q.VIN,YEAR=q.Year,REG_NO=q.Reg_NO}).ToList();
-            
-            dataGridView1.DataSource= cars;
-            dataGridView1.Columns[0].Visible = false;
+
+          
+            //var cars = _db.TypeOfCars.Select(q=>new { ID=q.id,NAME=q.name,MODEL=q.model,VIN=q.VIN,YEAR=q.Year,REG_NO=q.Reg_NO}).ToList();
+
+            dataGridView1.DataSource = FetchDetail();
+            dataGridView1.Columns[0].HeaderText = "ID";
             dataGridView1.Columns[1].HeaderText = "NAME";
         }
 
@@ -33,11 +71,12 @@ namespace CarRentalApp
         {
 
             // add new car button
-            var addEdve=new AddEditVehicle(this);
+            var addEdve=new AddEditVehicle(0);
             addEdve.MdiParent = this.MdiParent;
+            addEdve.vid = 0;
             addEdve.Show();
             addEdve.WindowState = FormWindowState.Maximized;
-
+            addEdve.mvfrm = this;
 
         }
 
@@ -46,23 +85,24 @@ namespace CarRentalApp
             //edit car button
             try
             {
+                // get id of selected row
 
-
-                    // get id of selected row
-                    var id = (int)dataGridView1.SelectedRows[0].Cells["ID"].Value;
-
-                    //query database for record
-                    var car = _db.TypeOfCars.FirstOrDefault(q => q.id == id);
+                var Id = (int)dataGridView1.SelectedRows[0].Cells["ID"].Value;
 
                 // launch AddEditVehicle Window With Data
 
                 if (!Utils.FormIsOpen("AddEditVehicle"))
-                {
-                    var addEditVehicle = new AddEditVehicle(car, this);
+                {   
+                    var addEditVehicle = new AddEditVehicle(Id);
                     addEditVehicle.MdiParent = this.MdiParent;
+                    addEditVehicle.vid = Id;
                     addEditVehicle.Show();
                     addEditVehicle.WindowState = FormWindowState.Maximized;
+                    addEditVehicle.mvfrm = this;
                 }
+
+
+                
 
             }
             catch (Exception ex)
@@ -78,57 +118,82 @@ namespace CarRentalApp
             //remove data from table 
             try
             {
-                // get id of selected row
-                var id = (int)dataGridView1.SelectedRows[0].Cells["ID"].Value;
-
-                //query database for record
-                var car = _db.TypeOfCars.FirstOrDefault(q => q.id == id);
 
                 DialogResult dr = MessageBox.Show("Are you sure want to delete this record?",
-                    "Delete",MessageBoxButtons.YesNoCancel,
+                    "Delete", MessageBoxButtons.YesNoCancel,
                     MessageBoxIcon.Warning);
-
 
                 // delete from table
                 if (dr == DialogResult.Yes)
                 {
-                    _db.TypeOfCars.Remove(car);
-                    _db.SaveChanges();
-                }
+                    // get id of selected row
+                    int id = (int)dataGridView1.SelectedRows[0].Cells["ID"].Value;
 
-                //dataGridView1.Refresh();
-                populateGrid();
+
+                    vehicleInfo info = new vehicleInfo();
+                    vehicleOp opr=new vehicleOp();
+
+                    opr.vehicleDelete(info,id);
+
+                    //DBConnect.createConnection();
+                    //SqlConnection con = new SqlConnection();
+                    //con = DBConnect.SqlConnection;
+                    //SqlCommand cmd = con.CreateCommand();
+                    //cmd.CommandType = CommandType.StoredProcedure;
+
+                    //cmd.CommandText = "RemoveCar";
+                    //cmd.Parameters.AddWithValue("@id", SqlDbType.Int).Value = id;
+
+                    //con.Open();
+                    //cmd.ExecuteNonQuery();
+                    //con.Close();
+
+      
+                    populateGrid();
+                }
+              
 
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-
             }
         }
-        
+
 
         public void populateGrid()
         {
-
             //for using refresh DatagridView
-            var reset = _db.TypeOfCars.Select(
-                q => new
-                {
+          
+            vehicleOp opr=new vehicleOp();
+            DataSet ds=new DataSet();
+            ds = opr.refreshGrid();
+            dataGridView1.DataSource=ds;
+            dataGridView1.DataMember= "TypeOfCar";
 
-                    Name = q.name,
-                    Modal = q.model,
-                    Vin = q.VIN,
-                    year = q.Year,
-                    regno = q.Reg_NO,
-                    q.id
-                }
 
-                ).ToList();
-            dataGridView1.DataSource = reset;
-            dataGridView1.Columns[5].HeaderText = "REG NUM";
-            dataGridView1.Columns["id"].Visible = false;
+            
+            
+            
+            
+            
+            //DBConnect.createConnection();
+            //SqlConnection con = new SqlConnection();
+            //con = DBConnect.SqlConnection;
+            //SqlCommand cmd = con.CreateCommand();
+            //cmd.CommandType = CommandType.StoredProcedure;
+            //cmd.CommandText = "ViewDataGrid";
+            //SqlDataAdapter da = new SqlDataAdapter(cmd);
+            //DataSet ds = new DataSet();
+            //da.Fill(ds, "TypeOfCar");
+            //dataGridView1.DataSource = ds;
+            //dataGridView1.DataMember = "TypeOfCar";
+            //con.Open();
+            //cmd.ExecuteNonQuery();
+            //con.Close();
 
         }
+        
+        
     }
 }

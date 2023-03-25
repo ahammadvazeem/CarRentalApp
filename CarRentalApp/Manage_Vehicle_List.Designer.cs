@@ -45,14 +45,14 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(835, 331);
+            this.dataGridView1.Size = new System.Drawing.Size(1001, 331);
             this.dataGridView1.TabIndex = 0;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Matura MT Script Capitals", 28.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(128, 48);
+            this.label1.Location = new System.Drawing.Point(259, 50);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(579, 62);
             this.label1.TabIndex = 1;
@@ -63,7 +63,7 @@
             this.addBtn.BackColor = System.Drawing.Color.SpringGreen;
             this.addBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.addBtn.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.addBtn.Location = new System.Drawing.Point(125, 517);
+            this.addBtn.Location = new System.Drawing.Point(212, 503);
             this.addBtn.Name = "addBtn";
             this.addBtn.Size = new System.Drawing.Size(194, 47);
             this.addBtn.TabIndex = 2;
@@ -75,7 +75,7 @@
             // 
             this.editBtn.BackColor = System.Drawing.Color.DodgerBlue;
             this.editBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.editBtn.Location = new System.Drawing.Point(339, 517);
+            this.editBtn.Location = new System.Drawing.Point(426, 503);
             this.editBtn.Name = "editBtn";
             this.editBtn.Size = new System.Drawing.Size(194, 47);
             this.editBtn.TabIndex = 3;
@@ -87,7 +87,7 @@
             // 
             this.deleteBtn.BackColor = System.Drawing.Color.PaleVioletRed;
             this.deleteBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.deleteBtn.Location = new System.Drawing.Point(559, 517);
+            this.deleteBtn.Location = new System.Drawing.Point(646, 503);
             this.deleteBtn.Name = "deleteBtn";
             this.deleteBtn.Size = new System.Drawing.Size(194, 47);
             this.deleteBtn.TabIndex = 4;
@@ -99,7 +99,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(913, 616);
+            this.ClientSize = new System.Drawing.Size(1114, 616);
             this.Controls.Add(this.deleteBtn);
             this.Controls.Add(this.editBtn);
             this.Controls.Add(this.addBtn);

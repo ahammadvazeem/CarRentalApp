@@ -11,57 +11,83 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using CarRentalApp;
+using System.Security.Cryptography;
+using BLL;
+using BAL;
+
 
 namespace CarRentalApp
 {
     public partial class AddRentalRecord : Form
     {
-        private readonly rentCarDbEntities1 rentcarDbEntities1;
+        //private readonly rentCarDbEntities1 rentcarDbEntities1;
         private bool isEditMode1;
-        private ViewRentalRecord _viewRentalRecord;
-        public AddRentalRecord(ViewRentalRecord viewRentalRecord)
+       // private ViewRentalRecord _viewRentalRecord;
+        public int rid;
+        public  ViewRentalRecord rnt_id;
+        public AddRentalRecord(int rid)
         {
             InitializeComponent();
-            label1.Text = "Add New Rent Record";
-            this.Text = "Add new Record";
-            isEditMode1 = false;
-            _viewRentalRecord = viewRentalRecord;
-            rentcarDbEntities1 = new rentCarDbEntities1();
 
-        }
-
-        public AddRentalRecord(CarRentalRecord EditRecord, ViewRentalRecord viewRentalRecord)
-        {
-            InitializeComponent();
-            label1.Text = "Edit Rent Record";
-            this.Text = "Edit Record";
-            rentcarDbEntities1 = new rentCarDbEntities1();
-            
-
-            if(EditRecord==null)
+            if(rid == 0)
             {
-                MessageBox.Show("select valid record to edit");
+                label1.Text = "Add New Rent Record";
+                this.Text = "Add new Record";
+                isEditMode1 = false;
+                //_viewRentalRecord = viewRentalRecord;
+                //rentcarDbEntities1 = new rentCarDbEntities1();
 
             }
             else
             {
+                label1.Text = "Edit Rent Record";
+                this.Text = "Edit Record";
                 isEditMode1 = true;
-                populateFields(EditRecord);
-                _viewRentalRecord = viewRentalRecord;
+
+                DataTable dtb= GetData(rid);
+
+                label7.Text = dtb.Rows[0]["id"].ToString();
+                textBox1.Text = dtb.Rows[0]["CustomerNmae"].ToString();
+                dateTimePicker1.Value = (DateTime)dtb.Rows[0]["RentedDate"];
+                dateTimePicker2.Value = (DateTime)dtb.Rows[0]["ReturnedDate"];
+                textBox2.Text = dtb.Rows[0]["Cost"].ToString();
+                comboBox1.Text = dtb.Rows[0]["CarTypeid"].ToString();
 
             }
 
+
         }
 
+        
 
         private void populateFields(CarRentalRecord Record)
         {
-            textBox1.Text = Record.CustomerNmae;
-            textBox2.Text = Record.Cost.ToString();
-            dateTimePicker1.Value = (DateTime)Record.RentedDate;
-            dateTimePicker2.Value =(DateTime)Record.ReturnedDate;
-            label7.Text = Record.id.ToString();
+            //textBox1.Text = Record.CustomerNmae;
+            //textBox2.Text = Record.Cost.ToString();
+            //dateTimePicker1.Value = (DateTime)Record.RentedDate;
+            //dateTimePicker2.Value =(DateTime)Record.ReturnedDate;
+            //label7.Text = Record.id.ToString();
 
+        }
+
+        public DataTable GetData(int rid) 
+        { 
+            DataTable dt = new DataTable();
+            DBConnect.createConnection();
+            SqlConnection con = new SqlConnection();
+            con = DBConnect.SqlConnection;
+            SqlCommand cmd= con.CreateCommand();
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandText = "EditData";
+            cmd.Parameters.AddWithValue("@id", rid);
+            SqlDataAdapter da = new SqlDataAdapter(cmd);
+            da.Fill(dt);
+            con.Open();
+            cmd.ExecuteNonQuery();
+            con.Close();
+        
+            return dt;
         }
 
 
@@ -75,60 +101,96 @@ namespace CarRentalApp
                 string customername = textBox1.Text;
                 var rentdate = dateTimePicker1.Value;
                 var returneddate = dateTimePicker2.Value;
-                double cost =Convert.ToDouble( textBox2.Text);
-                var cartype =comboBox1.Text;
+                double cost = Convert.ToDouble(textBox2.Text);
+                var cartype = comboBox1.SelectedValue;
                 var isValid = true;     // FOR USING VALIDATION
                 var errormessage = "";
 
-                // no empty customer name and car type
-                if (string.IsNullOrWhiteSpace(customername) || string.IsNullOrWhiteSpace(cartype))
-                {
-                    isValid = false;
-                    errormessage = "Error:please enter missing input!\n\r";
-                }
-                //returned date must be greater than rented date
-                if (returneddate < rentdate)
-                {
-                    isValid = false;
-                    errormessage = "Error:invalid date input!\r";
 
-                }
+                if (isValid)
 
-                if(isValid) 
-                
                 {
-                    if(isEditMode1)
+
+
+                    DBConnect.createConnection();
+                    SqlConnection con = new SqlConnection();
+                    con = DBConnect.SqlConnection;
+                    SqlCommand cmd = con.CreateCommand();
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    if (isEditMode1)
                     {
                         //EDIT CODE
-                        var Id = int.Parse(label7.Text);
-                        var rentalRecord= rentcarDbEntities1.CarRentalRecords.FirstOrDefault(q=>q.id== Id);
+                        int Id = int.Parse(label7.Text);
 
-                        rentalRecord.CustomerNmae = customername;
-                        rentalRecord.RentedDate = rentdate;
-                        rentalRecord.ReturnedDate = returneddate;
-                        rentalRecord.Cost =(decimal)cost;
-                        rentalRecord.CarTypeId = (int)comboBox1.SelectedValue;
+                        AddRentalInfo info = new AddRentalInfo();
+                        info.Customer_name = customername;
+                        info.rentDate = rentdate;
+                        info.returnDate = returneddate;
+                        info.Rent_cost = (decimal)cost;
+                        info.cartype_id = (int)cartype;
 
-                       
+                        Operations opr = new Operations();
+                        opr.AddRentalDetail(info,Id);
+
+
+
+                        //cmd.CommandText = "AddRentalDetail";
+                        //cmd.Parameters.AddWithValue("@actiontype", "saveData");
+                        //cmd.Parameters.Add("@id",SqlDbType.Int).Value = Id;
+                        //cmd.Parameters.Add("@customername",SqlDbType.VarChar,50).Value= customername;
+                        //cmd.Parameters.Add("@renteddate",SqlDbType.DateTime).Value= rentdate;
+                        //cmd.Parameters.Add("@returneddate",SqlDbType.DateTime).Value= returneddate;
+                        //cmd.Parameters.Add("@cost",SqlDbType.Decimal).Value= cost;
+                        //cmd.Parameters.Add("@cartypeid",SqlDbType.Int).Value= cartype;
+
+                        //con.Open();
+                        //cmd.ExecuteNonQuery();
+                        //con.Close();
+
+                        //var rentalRecord = rentcarDbEntities1.CarRentalRecords.FirstOrDefault(q => q.id == Id);
+
+                        //rentalRecord.CustomerNmae = customername;
+                        //rentalRecord.RentedDate = rentdate;
+                        //rentalRecord.ReturnedDate = returneddate;
+                        //rentalRecord.Cost = (decimal)cost;
+                        //rentalRecord.CarTypeId = (int)comboBox1.SelectedValue;
+
+
 
                     }
-                    else 
+                    else
                     {
-                        //ADD CODE
-
-                        var rentalRecord = new CarRentalRecord();
-                        rentalRecord.CustomerNmae = customername;
-                        rentalRecord.RentedDate = rentdate;
-                        rentalRecord.ReturnedDate = returneddate;
-                        rentalRecord.Cost =(decimal)cost;
-                        rentalRecord.CarTypeId = (int)comboBox1.SelectedValue;
-
-                        rentcarDbEntities1.CarRentalRecords.Add(rentalRecord);
+                        ///ADD CODE
+                        ///
+                         int Id=0;
                        
+                        //cmd.CommandText = "AddRentalDetail";
+                        //cmd.Parameters.AddWithValue("@actiontype", "saveData");
+                        //cmd.Parameters.AddWithValue("@id",Id);
+                        //cmd.Parameters.Add("@customername", SqlDbType.VarChar, 50).Value = customername;
+                        //cmd.Parameters.Add("@renteddate", SqlDbType.DateTime).Value = rentdate;
+                        //cmd.Parameters.Add("@returneddate", SqlDbType.DateTime).Value = returneddate;
+                        //cmd.Parameters.Add("@cost", SqlDbType.Decimal).Value = cost;
+                        //cmd.Parameters.Add("@cartypeid", SqlDbType.Int).Value = cartype;
+                        //con.Open();
+                        //cmd.ExecuteNonQuery();
+                        //con.Close();
+
+
+                        AddRentalInfo info= new AddRentalInfo();
+                        info.Customer_name = customername;
+                        info.rentDate = rentdate;
+                        info.returnDate = returneddate;
+                        info.Rent_cost = (decimal)cost;
+                        info.cartype_id = (int)cartype;
+
+                        Operations opr=new Operations();
+                        opr.AddRentalDetail(info,Id);
+
 
                     }
-                    rentcarDbEntities1.SaveChanges();
-                    _viewRentalRecord.RefreshButton();
+
 
                     MessageBox.Show($"CUSTOMER NAME:{customername}\n\r" +
                     $"RENTED DATE: {rentdate}\n\r" +
@@ -137,6 +199,7 @@ namespace CarRentalApp
                     $"COST: {cost}\n\n\r" +
                     $"Thank You For Your Contribution");
 
+                    rnt_id.RefreshButton();
 
                     Close();
 
@@ -144,9 +207,7 @@ namespace CarRentalApp
 
                 else
                 {
-
                     MessageBox.Show(errormessage);
-
 
                 }
 
@@ -162,11 +223,50 @@ namespace CarRentalApp
 
         private void AddRentalRecord_Load(object sender, EventArgs e)
         {
-            var cars = rentcarDbEntities1.TypeOfCars.Select(q => new {ID=q.id,NAME=q.name+" "+q.model}).ToList();
-            comboBox1.DisplayMember = "NAME";
-            comboBox1.ValueMember = "ID";
-            comboBox1.DataSource = cars;
+            //int Id = comboBox1.SelectedIndex;
+            ////var cars = rentcarDbEntities1.TypeOfCars.Select(q => new {ID=q.id,NAME=q.name+" "+q.model}).ToList();
+            //DBConnect.createConnection();
+            //SqlConnection con = new SqlConnection();
+            //con = DBConnect.SqlConnection;
+            //SqlCommand cmd=con.CreateCommand();
+            //cmd.CommandType = CommandType.StoredProcedure;
+            //cmd.CommandText = "Combox";
+            //cmd.Parameters.AddWithValue("@id",Id);
+            //con.Open();
+            //cmd.ExecuteNonQuery();
+            //con.Close();
+
+            comboBox1.DataSource = comboLoad();
+            comboBox1.DisplayMember = "model";
+            comboBox1.ValueMember = "id";
+
+
 
         }
+
+        public DataTable comboLoad()
+        {
+
+            //int Id = comboBox1.SelectedIndex;
+
+            DataTable dt = new DataTable();
+
+            DBConnect.createConnection();
+            SqlConnection con = new SqlConnection();
+            con = DBConnect.SqlConnection;
+            SqlCommand cmd = con.CreateCommand();
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandText = "Combox";
+            //cmd.Parameters.AddWithValue("@id", Id);
+            SqlDataAdapter da = new SqlDataAdapter(cmd);
+            da.Fill(dt);
+            con.Open();
+            cmd.ExecuteNonQuery();
+            con.Close();
+            return dt;
+
+
+        }
+
     }
 }
